@@ -274,16 +274,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Download Functionality
     downloadBtn.addEventListener('click', () => {
         const captureArea = document.getElementById('capture-area');
+        const gridWrapper = document.getElementById('grid-wrapper');
+        
+        // 그리드 뷰가 활성화되어 있는지 확인
+        const gridView = document.getElementById('grid-view');
+        if (!gridView || !gridView.classList.contains('active')) {
+            alert('그리드 뷰에서만 이미지를 저장할 수 있습니다.');
+            return;
+        }
         
         // 요소의 실제 렌더링된 크기 가져오기
         const rect = captureArea.getBoundingClientRect();
         const width = rect.width;
         const height = rect.height;
         
-        // 스크롤 위치 저장
-        const scrollX = window.scrollX || window.pageXOffset;
-        const scrollY = window.scrollY || window.pageYOffset;
-
         // html2canvas 옵션 설정 - 전체 영역을 정확히 캡처하도록 개선
         html2canvas(captureArea, {
             backgroundColor: savedSettings.bgColor,
@@ -293,18 +297,53 @@ document.addEventListener('DOMContentLoaded', () => {
             scrollX: 0, // 스크롤 위치 고정
             scrollY: 0, // 스크롤 위치 고정
             useCORS: true, // CORS 허용
-            allowTaint: false, // 외부 이미지 사용 허용
+            allowTaint: true, // 외부 리소스 허용
             logging: false, // 로깅 비활성화
-            windowWidth: width, // 윈도우 너비 설정
-            windowHeight: height, // 윈도우 높이 설정
-            x: 0, // 캡처 시작 X 좌표
-            y: 0, // 캡처 시작 Y 좌표
+            removeContainer: false, // 컨테이너 제거하지 않음
+            foreignObjectRendering: false, // foreignObject 렌더링 비활성화 (호환성 향상)
             onclone: (clonedDoc) => {
                 // 복제된 문서에서 요소의 스타일이 올바르게 적용되도록 보장
                 const clonedElement = clonedDoc.getElementById('capture-area');
+                const clonedGridWrapper = clonedDoc.getElementById('grid-wrapper');
+                
                 if (clonedElement) {
+                    // 컨테이너 스타일 명시적 설정
                     clonedElement.style.width = width + 'px';
                     clonedElement.style.height = height + 'px';
+                    clonedElement.style.display = 'block';
+                    clonedElement.style.visibility = 'visible';
+                    clonedElement.style.opacity = '1';
+                    clonedElement.style.position = 'relative';
+                    clonedElement.style.backgroundColor = savedSettings.bgColor;
+                }
+                
+                if (clonedGridWrapper) {
+                    // 그리드 래퍼가 보이도록 보장
+                    clonedGridWrapper.style.display = 'grid';
+                    clonedGridWrapper.style.visibility = 'visible';
+                    clonedGridWrapper.style.opacity = '1';
+                    clonedGridWrapper.style.width = '100%';
+                    clonedGridWrapper.style.height = '100%';
+                    
+                    // 모든 블록과 셀이 보이도록 보장
+                    const blocks = clonedGridWrapper.querySelectorAll('.block');
+                    blocks.forEach(block => {
+                        block.style.display = 'grid';
+                        block.style.visibility = 'visible';
+                        block.style.opacity = '1';
+                        
+                        const cells = block.querySelectorAll('.cell');
+                        cells.forEach(cell => {
+                            cell.style.visibility = 'visible';
+                            cell.style.opacity = '1';
+                            
+                            const textarea = cell.querySelector('textarea');
+                            if (textarea) {
+                                textarea.style.visibility = 'visible';
+                                textarea.style.opacity = '1';
+                            }
+                        });
+                    });
                 }
             }
         }).then(canvas => {
