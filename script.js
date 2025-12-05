@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Controls
     const fontSizeInput = document.getElementById('font-size-input');
     const bgColorInput = document.getElementById('bg-color-input');
+    const textColorInput = document.getElementById('text-color-input');
 
     // Tabs
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -21,15 +22,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize Settings
     const savedSettings = JSON.parse(localStorage.getItem('mandalartSettings')) || {
-        fontSize: 14,
-        bgColor: '#0f172a'
+        fontSize: 12,
+        bgColor: '#7B81E8',
+        textColor: '#1e293b'
     };
 
     function applySettings() {
         document.documentElement.style.setProperty('--base-font-size', `${savedSettings.fontSize}px`);
         document.documentElement.style.setProperty('--bg-color', savedSettings.bgColor);
+        document.documentElement.style.setProperty('--text-color', savedSettings.textColor);
+
         fontSizeInput.value = savedSettings.fontSize;
         bgColorInput.value = savedSettings.bgColor;
+        textColorInput.value = savedSettings.textColor;
     }
 
     function saveSettings() {
@@ -46,6 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
     bgColorInput.addEventListener('input', (e) => {
         savedSettings.bgColor = e.target.value;
         document.documentElement.style.setProperty('--bg-color', e.target.value);
+        saveSettings();
+    });
+
+    textColorInput.addEventListener('input', (e) => {
+        savedSettings.textColor = e.target.value;
+        document.documentElement.style.setProperty('--text-color', e.target.value);
         saveSettings();
     });
 

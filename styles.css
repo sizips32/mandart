@@ -1,19 +1,19 @@
 :root {
-    --bg-color: #0f172a;
-    --text-color: #f8fafc;
+    --bg-color: #7B81E8;
+    --text-color: #1e293b;
     --accent-color: #38bdf8;
     --accent-glow: rgba(56, 189, 248, 0.3);
-    --block-bg: rgba(30, 41, 59, 0.7);
-    --cell-bg: rgba(51, 65, 85, 0.5);
-    --cell-hover: rgba(71, 85, 105, 0.8);
-    --border-color: rgba(148, 163, 184, 0.1);
+    --block-bg: rgba(255, 255, 255, 0.3);
+    --cell-bg: #ffffff;
+    --cell-hover: #f1f5f9;
+    --border-color: rgba(255, 255, 255, 0.4);
     --font-main: 'Outfit', sans-serif;
 
-    --center-block-bg: rgba(56, 189, 248, 0.15);
-    --center-cell-bg: rgba(56, 189, 248, 0.25);
-    --center-text-color: #e0f2fe;
+    --center-block-bg: rgba(255, 255, 255, 0.5);
+    --center-cell-bg: rgba(56, 189, 248, 0.5);
+    --center-text-color: #ffffff;
 
-    --base-font-size: 14px;
+    --base-font-size: 12px;
     /* Default font size */
 }
 
