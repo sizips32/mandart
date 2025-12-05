@@ -274,16 +274,47 @@ document.addEventListener('DOMContentLoaded', () => {
     // Download Functionality
     downloadBtn.addEventListener('click', () => {
         const captureArea = document.getElementById('capture-area');
+        
+        // 요소의 실제 렌더링된 크기 가져오기
+        const rect = captureArea.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        
+        // 스크롤 위치 저장
+        const scrollX = window.scrollX || window.pageXOffset;
+        const scrollY = window.scrollY || window.pageYOffset;
 
-        // Temporarily adjust style for better screenshot if needed
+        // html2canvas 옵션 설정 - 전체 영역을 정확히 캡처하도록 개선
         html2canvas(captureArea, {
             backgroundColor: savedSettings.bgColor,
-            scale: 2 // High resolution
+            scale: 2, // High resolution
+            width: width, // 명시적으로 너비 설정
+            height: height, // 명시적으로 높이 설정
+            scrollX: 0, // 스크롤 위치 고정
+            scrollY: 0, // 스크롤 위치 고정
+            useCORS: true, // CORS 허용
+            allowTaint: false, // 외부 이미지 사용 허용
+            logging: false, // 로깅 비활성화
+            windowWidth: width, // 윈도우 너비 설정
+            windowHeight: height, // 윈도우 높이 설정
+            x: 0, // 캡처 시작 X 좌표
+            y: 0, // 캡처 시작 Y 좌표
+            onclone: (clonedDoc) => {
+                // 복제된 문서에서 요소의 스타일이 올바르게 적용되도록 보장
+                const clonedElement = clonedDoc.getElementById('capture-area');
+                if (clonedElement) {
+                    clonedElement.style.width = width + 'px';
+                    clonedElement.style.height = height + 'px';
+                }
+            }
         }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'my-mandalart.png';
-            link.href = canvas.toDataURL();
+            link.href = canvas.toDataURL('image/png', 1.0);
             link.click();
+        }).catch(error => {
+            console.error('이미지 저장 중 오류 발생:', error);
+            alert('이미지 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
         });
     });
 
